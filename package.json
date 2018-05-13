@@ -12,6 +12,9 @@
   },
   "homepage": "https://github.com/Wookia/RSO-Services-Reservations#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "bluebird": "^3.5.1",
+    "express": "^4.16.2",
+    "pg": "^7.4.3",
+    "sequelize": "^4.37.7"
   }
 }
