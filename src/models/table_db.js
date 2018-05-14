@@ -92,7 +92,13 @@ class Table {
         })
     }
 
-
+    deleteTable(id) {
+        return new Promise((resolve, reject) => {
+            this.Table_db.destroy({where: {id_table: id}}).then(result =>
+                resolve(result == 1)
+            )
+        })
+    }
 }
 
 module.exports = Table;

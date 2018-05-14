@@ -27,7 +27,6 @@ function getValidConnection(dbDriver) {
             .catch(err => {
                 console.log('Connection to DB cannot be established at the moment');
                 console.log(err.message);
-                // reject(err);
                 setTimeout(() => resolve(getValidConnection(dbDriver)), 10000);
             });
     });

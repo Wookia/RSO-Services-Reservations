@@ -1,10 +1,16 @@
 const express = require('express');
 const pg = require("pg");
+const bodyParser = require('body-parser');
+
 db = require("./models/db_connector");
 const Table_controller = require("./controllers/table")
 
 
 const app = express();
+
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
 
@@ -23,7 +29,7 @@ app.get('/reservations', (req, res) => {
     console.log("Reservations");
 
     res.json({
-        responseFrom: "reservations222"
+        responseFrom: "reservations"
     });
 });
 

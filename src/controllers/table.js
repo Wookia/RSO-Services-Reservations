@@ -4,7 +4,6 @@ class Table_controller {
     constructor(app, db_connector) {
         this.app = app;
         this.db = new Table_db(db_connector);
-        console.log('helo from table controller')
         this.addEndPoint()
     }
 
@@ -16,7 +15,7 @@ class Table_controller {
                 })
             }
         );
-        this.app.get('/table/free', (req, res) => {
+        this.app.get('/table/get_free', (req, res) => {
             this.db.getNotTaken().then(data => {
                     console.log('sent ' + data.length + ' free tables');
                     res.json(data);
@@ -50,9 +49,26 @@ class Table_controller {
             }
         });
         this.app.put('/table/update', (req, res) => {
-            console.log(JSON.stringify(req.body));
-            res.json({result: false});
-        })
+            this.db.updateTable(req.body).then(result => {
+                res.json({result})
+                if (result) console.log('Updated Table, id:' + req.body.id_table)
+            })
+        });
+        this.app.post('/table/add', (req, res) => {
+            this.db.addTable(req.body).then(result => {
+                res.json({result: result});
+                console.log('Added Table,' + result)
+            });
+        });
+        this.app.delete('/table/delete/:id', (req, res) => {
+            let id = req.params.id;
+            if (this.isNumber(id)) {
+                this.db.deleteTable(id).then(result => {
+                    res.json({result: result});
+                    if (result) console.log('deleted table, id:' + id);
+                })
+            }
+        });
     }
 
     isNumber(n) {
