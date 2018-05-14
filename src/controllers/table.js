@@ -48,10 +48,10 @@ class Table_controller {
                 })
             }
         });
-        this.app.put('/table/update', (req, res) => {
+        this.app.put('/table/:id', (req, res) => {
             this.db.updateTable(req.body).then(result => {
-                res.json({result})
-                if (result) console.log('Updated Table, id:' + req.body.id_table)
+                res.json({result});
+                if (result) console.log('Updated Table, id:' + req.params.id)
             })
         });
         this.app.post('/table/add', (req, res) => {
