@@ -8,7 +8,7 @@ class Table_controller {
     }
 
     addEndPoint() {
-        this.app.get('/table/get_all', (req, res) => {
+        this.app.get('/table/', (req, res) => {
                 this.db.getAll().then(data => {
                     console.log('sent ' + data.length + ' rows from Table to ' + req.host);
                     res.json(data);
@@ -31,7 +31,7 @@ class Table_controller {
                 });
             }
         });
-        this.app.put('/table/take/:id', (req, res) => {
+        this.app.put('/table/:id/take/', (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.takeTable(id).then(data => {
@@ -40,7 +40,7 @@ class Table_controller {
                 })
             }
         });
-        this.app.put('/table/free/:id', (req, res) => {
+        this.app.put('/table/:id/free/', (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.freeTable(id).then(result => {
@@ -60,7 +60,7 @@ class Table_controller {
                 console.log('Added Table,' + result)
             });
         });
-        this.app.delete('/table/delete/:id', (req, res) => {
+        this.app.delete('/table/:id/delete/', (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.deleteTable(id).then(result => {
