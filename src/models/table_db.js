@@ -3,8 +3,9 @@ const Sequelize = require('sequelize');
 // let Promise = require('bluebird');
 
 class Table {
+
     constructor(sequelize) {
-        this.Table_db = sequelize.define('Table', {
+        this._Table = sequelize.define('Table', {
             id_table: {
                 type: Sequelize.BIGINT,
                 primaryKey: true,
@@ -23,35 +24,49 @@ class Table {
             timestamps: false, //create and update col
             freezeTableName: true,
         });
-        this.Table_db.sync({force: true}).then(() => {
-            return this.Table_db.bulkCreate([
-                {waiter: 'John', seats: 6, is_taken: false},
-                {waiter: 'Peter', seats: 3, is_taken: false},
-                {waiter: 'Frank', seats: 2, is_taken: false},
-                {waiter: 'Peter', seats: 8, is_taken: false},
-                {waiter: 'Peter', seats: 2, is_taken: true},
-                {waiter: 'Frank', seats: 4, is_taken: false},
-                {waiter: 'John', seats: 5, is_taken: false}]);
-        });
+
+    }
+
+    get Table() {
+        return this._Table;
+    }
+
+    set Table(value) {
+        this._Table = value;
+    }
+
+    createData() {
+        return new Promise((resolve, reject) => {
+            this._Table.sync({force: true}).then(() => {
+                this._Table.bulkCreate([
+                    {waiter: 'John', seats: 6, is_taken: false},
+                    {waiter: 'Peter', seats: 3, is_taken: false},
+                    {waiter: 'Frank', seats: 2, is_taken: true},
+                    {waiter: 'Peter', seats: 8, is_taken: false},
+                    {waiter: 'Peter', seats: 2, is_taken: true},
+                    {waiter: 'Frank', seats: 4, is_taken: false},
+                    {waiter: 'John', seats: 5, is_taken: false}]).then(resolve())
+            });
+        })
     }
 
     getAll() {
         return new Promise((resolve, reject) => {
-            this.Table_db.findAll().then(data =>
-                resolve(data))
+            this._Table.findAll().then(data =>
+                resolve(data));
         })
     }
 
     getById(id) {
         return new Promise((resolve, reject) => {
-            this.Table_db.findById(id).then(data =>
+            this._Table.findById(id).then(data =>
                 resolve(data))
         })
     }
 
     getNotTaken() {
         return new Promise((resolve, reject) => {
-            this.Table_db.findAll({where: {is_taken: false}}).then(data => {
+            this._Table.findAll({where: {is_taken: false}}).then(data => {
                 resolve(data);
             })
         })
@@ -59,7 +74,7 @@ class Table {
 
     takeTable(id) {
         return new Promise((resolve, reject) => {
-            this.Table_db.update({is_taken: true}, {where: {id_table: parseInt(id)}}).then((result) => {
+            this._Table.update({is_taken: true}, {where: {id_table: parseInt(id)}}).then((result) => {
                 resolve(result == 1)
             })
         })
@@ -67,7 +82,7 @@ class Table {
 
     freeTable(id) {
         return new Promise((resolve, reject) => {
-            this.Table_db.update({is_taken: false}, {where: {id_table: parseInt(id)}}).then(result => {
+            this._Table.update({is_taken: false}, {where: {id_table: parseInt(id)}}).then(result => {
                 resolve(result == 1)
             })
         })
@@ -75,7 +90,7 @@ class Table {
 
     updateTable(req) {
         return new Promise((resolve, reject) => {
-            this.Table_db.update({
+            this._Table.update({
                 waiter: req.waiter,
                 seats: req.seats,
                 is_taken: req.is_taken
@@ -86,7 +101,7 @@ class Table {
 
     addTable(req) {
         return new Promise((resolve, reject) => {
-            this.Table_db.create(req).then((data) => {
+            this._Table.create(req).then((data) => {
                 resolve(data.dataValues)
             })
         })
@@ -94,7 +109,7 @@ class Table {
 
     deleteTable(id) {
         return new Promise((resolve, reject) => {
-            this.Table_db.destroy({where: {id_table: id}}).then(result =>
+            this._Table.destroy({where: {id_table: id}}).then(result =>
                 resolve(result == 1)
             )
         })

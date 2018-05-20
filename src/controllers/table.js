@@ -1,21 +1,19 @@
-const Table_db = require("../models/table_db")
-
 class Table_controller {
-    constructor(app, db_connector) {
+    constructor(app, table_db) {
         this.app = app;
-        this.db = new Table_db(db_connector);
+        this.db = table_db;
         this.addEndPoint()
     }
 
     addEndPoint() {
         this.app.get('/table/', (req, res) => {
                 this.db.getAll().then(data => {
-                    console.log('sent ' + data.length + ' rows from Table to ' + req.host);
+                    console.log('sent ' + data.length + ' rows from Table to ' + req.hostname);
                     res.json(data);
                 })
             }
         );
-        this.app.get('/table/get_free', (req, res) => {
+        this.app.get('/table/free', (req, res) => {
             this.db.getNotTaken().then(data => {
                     console.log('sent ' + data.length + ' free tables');
                     res.json(data);
@@ -54,17 +52,16 @@ class Table_controller {
                 if (result) console.log('Updated Table, id:' + req.params.id)
             })
         });
-        this.app.post('/table/add', (req, res) => {
+        this.app.post('/table/', (req, res) => {
             this.db.addTable(req.body).then(result => {
-                res.json({result: result});
-                console.log('Added Table,' + result)
+                res.json({result});
             });
         });
-        this.app.delete('/table/:id/delete/', (req, res) => {
+        this.app.delete('/table/:id/', (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.deleteTable(id).then(result => {
-                    res.json({result: result});
+                    res.json({result});
                     if (result) console.log('deleted table, id:' + id);
                 })
             }
