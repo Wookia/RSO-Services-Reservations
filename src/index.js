@@ -21,19 +21,11 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/reservations', (req, res) => {
-    console.log("Reservations");
-    res.json({
-        responseFrom: "reservations"
-    });
-});
-
 
 db.then((dbDriver) => {
     let table_db = new Table_db(dbDriver);
-    let reservation_db = new Reservation_db(dbDriver);
+    let reservation_db = new Reservation_db(dbDriver, table_db);
     table_db.Table.hasMany(reservation_db.Reservation, {as: 'Reservations', foreignKey: {name: 'id_table'}});
-    reservation_db.Reservation.belongsTo(table_db.Table);
     table_db.createData().then(() => reservation_db.createData());
     let table_controller = new Table_controller(app, table_db);
     let reservation_controller = new Reservation_controller(app, reservation_db);

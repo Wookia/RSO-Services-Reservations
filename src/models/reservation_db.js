@@ -3,7 +3,8 @@ let Promise = require('bluebird');
 
 class Reservation_db {
 
-    constructor(sequelize) {
+    constructor(sequelize, table_db) {
+        this.table_db = table_db;
         this._Reservation = sequelize.define('Reservation', {
             id_reservation: {
                 type: Sequelize.BIGINT,
@@ -120,10 +121,16 @@ class Reservation_db {
     realize(id) {
         return new Promise((resolve, reject) => {
                 this._Reservation.update(
-                    {realize: true},
-                    {where: {id_reservation: parseInt(id)}})
+                    {realized: true},
+                    {
+                        where: {id_reservation: id},
+                        returning: true,
+                        plain: true
+                    })
                     .then(result => {
-                        resolve(result);
+                        let id_table=result[1].dataValues.id_table;
+                        this.table_db.takeTable(id_table).then(finalResult => resolve(finalResult)
+                        );
                     })
             }
         )
@@ -137,7 +144,7 @@ class Reservation_db {
                     amount: req.amount,
                     from_time: req.from_time,
                     to_time: req.to_time,
-                    realize: req.realize
+                    realized: req.realized
                 }, {where: {id_reservation: req.id_reservation}})
                     .then(result => {
                         resolve(result == 1);
