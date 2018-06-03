@@ -2,7 +2,7 @@ class Reservation_controller {
     constructor(app, reservation_db) {
         this.app = app;
         this.db = reservation_db;
-        this.endpoint = "/reservation/";
+        this.endpoint = "/api/reservation/";
         this.addEndPoint()
     }
 

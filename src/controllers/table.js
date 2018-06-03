@@ -6,21 +6,21 @@ class Table_controller {
     }
 
     addEndPoint() {
-        this.app.get('/table/', (req, res) => {
+        this.app.get('/api/table/', (req, res) => {
                 this.db.getAll().then(data => {
                     console.log('sent ' + data.length + ' rows from Table to ' + req.hostname);
                     res.json(data);
                 })
             }
         );
-        this.app.get('/table/free', (req, res) => {
+        this.app.get('/api/table/free', (req, res) => {
             this.db.getNotTaken().then(data => {
                     console.log('sent ' + data.length + ' free tables');
                     res.json(data);
                 }
             )
         });
-        this.app.get('/table/:id', (req, res) => {
+        this.app.get('/api/table/:id', (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.getById(id).then(data => {
@@ -29,7 +29,7 @@ class Table_controller {
                 });
             }
         });
-        this.app.put('/table/:id/take/', (req, res) => {
+        this.app.put('/api/table/:id/take/', (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.takeTable(id).then(data => {
@@ -38,7 +38,7 @@ class Table_controller {
                 })
             }
         });
-        this.app.put('/table/:id/free/', (req, res) => {
+        this.app.put('/api/table/:id/free/', (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.freeTable(id).then(result => {
@@ -46,18 +46,18 @@ class Table_controller {
                 })
             }
         });
-        this.app.put('/table/:id', (req, res) => {
+        this.app.put('/api/table/:id', (req, res) => {
             this.db.updateTable(req.body).then(result => {
                 res.json({result});
                 if (result) console.log('Updated Table, id:' + req.params.id)
             })
         });
-        this.app.post('/table/', (req, res) => {
+        this.app.post('/api/table/', (req, res) => {
             this.db.addTable(req.body).then(result => {
                 res.json({result});
             });
         });
-        this.app.delete('/table/:id/', (req, res) => {
+        this.app.delete('/api/table/:id/', (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.deleteTable(id).then(result => {
