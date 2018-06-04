@@ -1,13 +1,15 @@
 class Reservation_controller {
-    constructor(app, reservation_db) {
+    constructor(app, reservation_db, jwt) {
+        this.jwt = jwt;
         this.app = app;
         this.db = reservation_db;
         this.endpoint = "/api/reservation/";
+
         this.addEndPoint()
     }
 
     addEndPoint() {
-        this.app.get(this.endpoint, (req, res) => {
+        this.app.get(this.endpoint, this.jwt, (req, res) => {
             this.db.getAll().then(data => {
                 console.log('sent ' + data.length + ' rows from reservation to ' + req.hostname);
                 res.json(data);
