@@ -15,19 +15,19 @@ class Reservation_controller {
                 res.json(data);
             });
         });
-        this.app.get(this.endpoint + 'unrealized', (req, res) => {
+        this.app.get(this.endpoint + 'unrealized', this.jwt, (req, res) => {
             this.db.getUnrealized().then(data => {
                 console.log('sent ' + data.length + ' unrealized reservation to ' + req.hostname);
                 res.json(data);
             });
         });
-        this.app.get(this.endpoint + 'realized', (req, res) => {
+        this.app.get(this.endpoint + 'realized', this.jwt, (req, res) => {
             this.db.getRealized().then(data => {
                 console.log('sent ' + data.length + ' realized reservation to ' + req.hostname);
                 res.json(data);
             });
         });
-        this.app.get(this.endpoint + ":id", (req, res) => {
+        this.app.get(this.endpoint + ":id", this.jwt, (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.getById(id).then(data => {
@@ -36,12 +36,12 @@ class Reservation_controller {
                 });
             }
         });
-        this.app.post(this.endpoint, (req, res) => {
+        this.app.post(this.endpoint, this.jwt, (req, res) => {
             this.db.addReservation(req.body).then(result => {
                 res.json({result});
             })
         });
-        this.app.put(this.endpoint + ":id/realize", (req, res) => { //znaleźć sposob na zmiane w TABLE.is_taken
+        this.app.put(this.endpoint + ":id/realize", this.jwt, (req, res) => { //znaleźć sposob na zmiane w TABLE.is_taken
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.realize(id).then(result => {
@@ -50,7 +50,7 @@ class Reservation_controller {
                 })
             }
         });
-        this.app.put(this.endpoint + ":id/", (req, res) => {
+        this.app.put(this.endpoint + ":id/", this.jwt, (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id) && req.body.id_reservation === id) {
                 this.db.update(req.body).then(result => {
@@ -61,7 +61,7 @@ class Reservation_controller {
                 res.send(':id is not equal id_reservation in body', 400);
             }
         });
-        this.app.delete(this.endpoint + ":id", (req, res) => {
+        this.app.delete(this.endpoint + ":id", this.jwt, (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.delete(id).then(result => {
