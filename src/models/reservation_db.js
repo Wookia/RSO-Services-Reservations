@@ -1,10 +1,13 @@
 const Sequelize = require('sequelize');
 let Promise = require('bluebird');
+const Op = require('Sequelize').Op;
 
 class Reservation_db {
 
     constructor(sequelize, table_db) {
         this.table_db = table_db;
+        this.op = Op;
+        this.seq = sequelize;
         this._Reservation = sequelize.define('Reservation', {
             id_reservation: {
                 type: Sequelize.BIGINT,
@@ -113,8 +116,18 @@ class Reservation_db {
 
     addReservation(req) {
         return new Promise((resolve, reject) => {
-            this._Reservation.create(req).then(data =>
-                resolve(data.dataValues))
+            this.seq.query('SELECT * FROM "public"."Reservation" WHERE id_table=' + req.id_table + " AND (( from_time <  '" + req.from_time + "' AND TO_TIME > '" + req.from_time + "' ) OR ( FROM_TIME < '" + req.to_time + "' AND TO_TIME > '" + req.to_time + "' ))",
+                {model: this.Reservation}).then((results) => {
+                    if (results.toString().length === 0) {
+                        this._Reservation.create(req).then(data => {
+                            resolve(data.dataValues);
+                        });
+                    } else {
+                        reject()
+                    }
+                }
+            );
+
         })
     }
 
@@ -128,7 +141,7 @@ class Reservation_db {
                         plain: true
                     })
                     .then(result => {
-                        let id_table=result[1].dataValues.id_table;
+                        let id_table = result[1].dataValues.id_table;
                         this.table_db.takeTable(id_table).then(finalResult => resolve(finalResult)
                         );
                     })

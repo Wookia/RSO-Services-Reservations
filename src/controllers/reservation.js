@@ -9,7 +9,7 @@ class Reservation_controller {
     }
 
     addEndPoint() {
-        this.app.get(this.endpoint, this.jwt, (req, res) => {
+        this.app.get(this.endpoint,this.jwt, (req, res) => {
             this.db.getAll().then(data => {
                 console.log('sent ' + data.length + ' rows from reservation to ' + req.hostname);
                 res.json(data);
@@ -36,12 +36,12 @@ class Reservation_controller {
                 });
             }
         });
-        this.app.post(this.endpoint, this.jwt, (req, res) => {
+        this.app.post(this.endpoint, this.jwt,(req, res) => {
             this.db.addReservation(req.body).then(result => {
                 res.json({result});
-            })
+            }).catch(error => res.send("Can't add the reservation", 400))
         });
-        this.app.put(this.endpoint + ":id/realize", this.jwt, (req, res) => { //znaleźć sposob na zmiane w TABLE.is_taken
+        this.app.put(this.endpoint + ":id/realize", this.jwt, (req, res) => {
             let id = req.params.id;
             if (this.isNumber(id)) {
                 this.db.realize(id).then(result => {
