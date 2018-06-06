@@ -9,7 +9,7 @@ class Reservation_controller {
     }
 
     addEndPoint() {
-        this.app.get(this.endpoint,this.jwt, (req, res) => {
+        this.app.get(this.endpoint, this.jwt, (req, res) => {
             this.db.getAll().then(data => {
                 console.log('sent ' + data.length + ' rows from reservation to ' + req.hostname);
                 res.json(data);
@@ -36,10 +36,13 @@ class Reservation_controller {
                 });
             }
         });
-        this.app.post(this.endpoint, this.jwt,(req, res) => {
-            this.db.addReservation(req.body).then(result => {
-                res.json({result});
-            }).catch(error => res.send("Can't add the reservation", 400))
+        this.app.post(this.endpoint,this.jwt, (req, res) => {
+            if (req.body.from_time > req.body.to_time) {
+                res.send(" from_time > to_time", 400);
+            } else
+                this.db.addReservation(req.body).then(result => {
+                    res.json({result});
+                }).catch(error => res.send("Can't add the reservation", 400))
         });
         this.app.put(this.endpoint + ":id/realize", this.jwt, (req, res) => {
             let id = req.params.id;

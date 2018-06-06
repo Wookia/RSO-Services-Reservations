@@ -18,8 +18,11 @@
     "express-jwt": "^5.3.1",
     "express-promise-router": "^3.0.2",
     "fs": "0.0.1-security",
+    "istanbul": "^0.4.5",
+    "jasmine": "^3.1.0",
     "jsonwebtoken": "^8.2.2",
     "pg": "^7.4.3",
-    "sequelize": "^4.37.7"
+    "sequelize": "^4.37.7",
+    "sqlite3": "^4.0.0"
   }
 }
