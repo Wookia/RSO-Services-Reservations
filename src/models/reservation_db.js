@@ -116,7 +116,11 @@ class Reservation_db {
 
     addReservation(req) {
         return new Promise((resolve, reject) => {
-            this.seq.query('SELECT * FROM "public"."Reservation" WHERE id_table=' + req.id_table + " AND (( from_time <  '" + req.from_time + "' AND TO_TIME > '" + req.from_time + "' ) OR ( FROM_TIME < '" + req.to_time + "' AND TO_TIME > '" + req.to_time + "' ))",
+            this.seq.query('SELECT * FROM "public"."Reservation" ' +
+                'WHERE id_table=' + req.id_table + " " +
+                "AND (( from_time <=  '" + req.from_time + "' AND TO_TIME >= '" + req.from_time + "' ) " +
+                "OR ( FROM_TIME <= '" + req.to_time + "' AND TO_TIME >= '" + req.to_time + "' ) " +
+                "OR ( FROM_TIME >= '" + req.from_time + "' AND TO_TIME <= '" + req.to_time +"'))",
                 {model: this.Reservation}).then((results) => {
                     if (results.toString().length === 0) {
                         this._Reservation.create(req).then(data => {
