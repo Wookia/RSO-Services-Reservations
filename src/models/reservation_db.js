@@ -1,12 +1,10 @@
 const Sequelize = require('sequelize');
 let Promise = require('bluebird');
-const Op = require('Sequelize').Op;
 
 class Reservation_db {
 
     constructor(sequelize, table_db) {
         this.table_db = table_db;
-        this.op = Op;
         this.seq = sequelize;
         this._Reservation = sequelize.define('Reservation', {
             id_reservation: {
@@ -44,7 +42,7 @@ class Reservation_db {
     }
 
     createData() {
-        this._Reservation.sync({force: true}).then(() => {
+        this._Reservation.sync({force: false}).then(() => {
             return this._Reservation.bulkCreate([
                 {
                     id_table: 1,
