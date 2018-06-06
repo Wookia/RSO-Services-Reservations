@@ -36,7 +36,7 @@ class Reservation_controller {
                 });
             }
         });
-        this.app.post(this.endpoint, (req, res) => {
+        this.app.post(this.endpoint,this.jwt, (req, res) => {
             if (req.body.from_time > req.body.to_time) {
                 res.send(" from_time > to_time", 400);
             } else
