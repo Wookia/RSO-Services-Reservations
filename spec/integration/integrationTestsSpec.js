@@ -146,7 +146,7 @@ describe("Reservation Service - Integration Tests / ", function () {
             });
 
             it("should update table", function (done) {
-                request.put(baseUrl + "table/" + id_table + "/take", {
+                request.put(baseUrl + "table/" + id_table , {
                     body: {
                         "id_table": id_table,
                         "waiter": "Peter",
@@ -229,6 +229,50 @@ describe("Reservation Service - Integration Tests / ", function () {
                     expect(response.statusCode).toEqual(200);
                     expect(response.body.result.id_reservation).toBeDefined();
                     id_reservation = response.body.result.id_reservation;
+                    done();
+                });
+            });
+
+            it("should reject adding a reservation", function (done) {
+                request.post(baseUrl + "reservation", {
+                    body: {
+                        "name": "JHON",
+                        "amount": 5,
+                        "from_time": "2013-08-07T06:00:00.000Z",
+                        "to_time": "2015-08-07T10:00:00.000Z",
+                        "realized": false,
+                        "id_table": id_table
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(400);
+                    expect(response.body).toBeDefined("Can't add the reservation");
+                    done();
+                });
+            });
+
+            it("should reject adding a reservation", function (done) {
+                request.post(baseUrl + "reservation", {
+                    body: {
+                        "name": "JHON",
+                        "amount": 5,
+                        "from_time": "2018-08-07T06:00:00.000Z",
+                        "to_time": "2015-08-07T10:00:00.000Z",
+                        "realized": false,
+                        "id_table": id_table
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(400);
+                    expect(response.body).toBe(" from_time > to_time");
                     done();
                 });
             });

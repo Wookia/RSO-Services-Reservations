@@ -48,7 +48,7 @@ class Table_controller {
             }
         });
         this.app.put('/api/table/:id', this.jwt, (req, res) => {
-            if (req.params.id !== req.body.id_table)
+            if (req.params.id != req.body.id_table)
                 res.status(400).send("param's is not equal bodies id");
             else
                 this.db.updateTable(req.body).then(result => {
