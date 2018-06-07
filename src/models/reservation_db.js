@@ -27,7 +27,7 @@ class Reservation_db {
             realized: {
                 type: Sequelize.BOOLEAN
             },
-            id_table:{type: Sequelize.INTEGER } // TODO 2. usunac to pole i powinno wywalac blad przy dodaniu klucza obcego
+            //id_table:{type: Sequelize.INTEGER } // TODO 2. usunac to pole i powinno wywalac blad przy dodaniu klucza obcego
         }, {
             timestamps: false, //create and update col
             freezeTableName: true,
