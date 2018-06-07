@@ -55,7 +55,7 @@ class Reservation_controller {
         });
         this.app.put(this.endpoint + ":id/", this.jwt, (req, res) => {
             let id = req.params.id;
-            if (this.isNumber(id) && req.body.id_reservation === id) {
+            if (this.isNumber(id) && req.body.id_reservation == id) {
                 this.db.update(req.body).then(result => {
                     res.json({result});
                     console.log("Reservation nr " + id + " updated");
