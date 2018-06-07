@@ -28,21 +28,24 @@ exports.startServer = function () {
             let table_db = new Table_db(dbDriver);
             let reservation_db = new Reservation_db(dbDriver, table_db);
             table_db.Table.hasMany(reservation_db.Reservation, {as: 'Reservation', foreignKey: {name: 'id_table'}});
-            table_db.createData().then(() =>{
-                let publicKey = fs.readFileSync('./dev-keys/public.pem', 'utf8');
-                let table_controller = new Table_controller(app, table_db, jwt({
-                    secret: publicKey,
-                    algorithms: ['RS256']
-                }));
-                let reservation_controller = new Reservation_controller(app, reservation_db, jwt({
-                    secret: publicKey,
-                    algorithms: ['RS256']
-                }));
+            table_db.createData().then(() => {
+                reservation_db.createData().then(() => {
+                    let publicKey = fs.readFileSync('./dev-keys/public.pem', 'utf8');
+                    let table_controller = new Table_controller(app, table_db, jwt({
+                        secret: publicKey,
+                        algorithms: ['RS256']
+                    }));
+                    let reservation_controller = new Reservation_controller(app, reservation_db, jwt({
+                        secret: publicKey,
+                        algorithms: ['RS256']
+                    }));
 
-                self._server = app.listen(process.env.PORT || 3000, () => {
-                    console.log('Microservice listening on port: ' + (process.env.PORT || 3000));
-                    resolve();
+                    self._server = app.listen(process.env.PORT || 3000, () => {
+                        console.log('Microservice listening on port: ' + (process.env.PORT || 3000));
+                        resolve();
+                    });
                 });
+
             });
         });
     });

@@ -37,7 +37,7 @@ class Table {
 
     createData() {
         return new Promise((resolve, reject) => {
-            this._Table.sync({force: false}).then(() => {
+            this._Table.sync({force: true}).then(() => {
                 this._Table.bulkCreate([
                     {waiter: 'John', seats: 6, is_taken: false},
                     {waiter: 'Peter', seats: 3, is_taken: false},

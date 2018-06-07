@@ -48,10 +48,13 @@ class Table_controller {
             }
         });
         this.app.put('/api/table/:id', this.jwt, (req, res) => {
-            this.db.updateTable(req.body).then(result => {
-                res.json({result});
-                if (result) console.log('Updated Table, id:' + req.params.id)
-            })
+            if (req.params.id !== req.body.id_table)
+                res.status(400).send("param's is not equal bodies id");
+            else
+                this.db.updateTable(req.body).then(result => {
+                    res.json({result});
+                    if (result) console.log('Updated Table, id:' + req.params.id)
+                });
         });
         this.app.post('/api/table/', this.jwt, (req, res) => {
             this.db.addTable(req.body).then(result => {
