@@ -19,7 +19,7 @@ describe("Reservation Service - Integration Tests / ", function () {
 
     beforeAll(function (done) {
         fs.unlink('spec/database.sqlite');
-        myService = require("../../src/index.js");
+        myService = require("../../src/server.js");
         myService.startServer().then(() => {
             done();
         });
@@ -45,7 +45,7 @@ describe("Reservation Service - Integration Tests / ", function () {
                     },
                     json: true
                 }, function (err, response, body) {
-                    console.log('info ' + JSON.stringify(response)) ;
+                    console.log('infooooo ' + JSON.stringify(response)) ;
                     expect(response.statusCode).toEqual(200);
                     expect(response.body[0].waiter).toBeDefined();
                     expect(response.body[0].seats).toBeDefined();
