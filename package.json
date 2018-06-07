@@ -4,7 +4,8 @@
   "description": "Reservations service for RSO project",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "istanbul cover --config=./spec/.istanbul.yml ./spec/executeTests.js"
   },
   "repository": {
     "type": "git",

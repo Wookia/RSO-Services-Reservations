@@ -7,7 +7,7 @@ function createConnection() {
     const DB_USER = (process.env.DB_USER || 'postgres');
     const DB_PASSWORD = (process.env.DB_PASSWORD || 'password');
     const DB_HOST = (process.env.DB_HOST || getDbHost());
-    const DB_PORT = (process.env.DB_PORT || 5432);
+    const DB_PORT = (process.env.DB_PORT || 6543);
     let config = process.env.TESTS ? {
         dialect: 'sqlite',
         storage: 'spec/database.sqlite'
@@ -16,11 +16,7 @@ function createConnection() {
         host: DB_HOST,
         port: DB_PORT,
     };
-    return new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
-        dialect: 'postgres',
-        host: DB_HOST,
-        port: DB_PORT,
-    }, config);
+    return new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, config);
 }
 
 function getValidConnection(dbDriver) {
