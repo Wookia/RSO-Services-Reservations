@@ -18,20 +18,24 @@ describe("Reservation Service - Integration Tests / ", function () {
     let baseUrl = "http://localhost:" + port + "/api/";
 
     beforeAll(function (done) {
-        fs.unlink('spec/database.sqlite');
+        if (fs.existsSync('spec/database.sqlite')) {
+            fs.unlink('spec/database.sqlite');
+        }
         myService = require("../../src/server.js");
         myService.startServer().then(() => {
             done();
         });
 
-    }, 60000);
+    });
 
     afterAll(function (done) {
         myService.stopServer().then(() => {
-            fs.unlink('spec/database.sqlite');
+            if (fs.existsSync('spec/database.sqlite')) {
+                fs.unlink('spec/database.sqlite');
+            }
             done();
         });
-    }, 60000);
+    });
 
     describe("Table", function () {
 

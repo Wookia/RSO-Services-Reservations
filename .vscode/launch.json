@@ -17,6 +17,23 @@
 			"console":"internalConsole",
 			"sourceMaps": false,
 			"outFiles": []
+		},
+        {
+            "name": "Launch Tests (Jasmine)",
+			"type": "node",
+			"request": "launch",
+            "program": "${workspaceRoot}/spec/executeTests.js",
+			"sourceMaps": false,
+			"cwd": "${workspaceRoot}",
+			"outputCapture": "std",
+			"skipFiles": [
+				"<node_internals>/**",
+				"node_modules/cls-hooked/**"
+			],
+			"outFiles": [],
+			"stopOnEntry": false,
+			"env": {
+			}
 		}
 	]
 }
