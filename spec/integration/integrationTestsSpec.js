@@ -23,9 +23,7 @@ describe("Reservation Service - Integration Tests / ", function () {
         }
         myService = require("../../src/server.js");
         myService.startServer().then(() => {
-            setTimeout(() => {
-                done();
-            }, 15000);
+            done();
 
         });
 
@@ -68,7 +66,7 @@ describe("Reservation Service - Integration Tests / ", function () {
                         'Authorization': 'Bearer ' + token
                     },
                     json: true
-                }, function (err, response, body) {//pytanie o fora
+                }, function (err, response, body) {
                     expect(response.statusCode).toEqual(200);
                     expect(response.body[0].waiter).toBeDefined();
                     expect(response.body[0].seats).toBeDefined();
@@ -208,6 +206,7 @@ describe("Reservation Service - Integration Tests / ", function () {
 
     });
 
+
     describe("Reservation", function () {
         describe("/POST", function () {
 
@@ -229,11 +228,183 @@ describe("Reservation Service - Integration Tests / ", function () {
                 }, function (err, response, body) {
                     expect(response.statusCode).toEqual(200);
                     expect(response.body.result.id_reservation).toBeDefined();
+                    id_reservation = response.body.result.id_reservation;
+                    done();
+                });
+            });
+        });
+
+        describe("/GET", function () {
+
+            it("should return all reservations", function (done) {
+                request.get(baseUrl + "reservation", {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(200);
+                    expect(response.body[0].id_reservation).toBeDefined();
+                    expect(response.body[0].name).toBeDefined();
+                    expect(response.body[0].amount).toBeDefined();
+                    expect(response.body[0].from_time).toBeDefined();
+                    expect(response.body[0].to_time).toBeDefined();
+                    expect(response.body[0].realized).toBeDefined();
+                    expect(response.body[0].id_table).toBeDefined();
+
+                    done();
+                });
+            });
+
+            it("should return unrealized reservations", function (done) {
+                request.get(baseUrl + "reservation/unrealized", {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(200);
+                    expect(response.body[0].id_reservation).toBeDefined();
+                    expect(response.body[0].name).toBeDefined();
+                    expect(response.body[0].amount).toBeDefined();
+                    expect(response.body[0].from_time).toBeDefined();
+                    expect(response.body[0].to_time).toBeDefined();
+                    expect(response.body[0].realized).toBe(false);
+                    expect(response.body[0].id_table).toBeDefined();
+
+                    done();
+                });
+            });
+
+            it("should return reservation id " + id_reservation, function (done) {
+                request.get(baseUrl + "reservation/" + id_reservation, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(200);
+                    expect(response.body.id_reservation).toBeDefined();
+                    expect(response.body.name).toBeDefined();
+                    expect(response.body.amount).toBeDefined();
+                    expect(response.body.from_time).toBeDefined();
+                    expect(response.body.to_time).toBeDefined();
+                    expect(response.body.realized).toBeDefined();
+                    expect(response.body.id_table).toBeDefined();
 
                     done();
                 });
             });
         });
-    })
 
+        describe("/PUT", function () {
+
+            it("should realize reservation", function (done) {
+                request.put(baseUrl + "reservation/" + id_reservation + "/realize", {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(200);
+                    expect(response.body.result).toBeDefined(); //TODO spytac
+
+                    done();
+                });
+            });
+
+            it("should update reservation", function (done) {
+                request.put(baseUrl + "reservation/" + id_reservation, {
+                    body: {
+                        id_table: 3,
+                        name: "ANN",
+                        amount: 2,
+                        from_time: new Date(Date.UTC(2018, 7, 7, 10)),
+                        to_time: new Date(Date.UTC(2018, 7, 7, 12)),
+                        realized: true,
+                        id_reservation: id_reservation,
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(200);
+                    expect(response.body.result).toBe(true);
+
+                    done();
+                });
+            });
+
+            it("should reject update reservation", function (done) {
+                request.put(baseUrl + "reservation/" + id_reservation, {
+                    body: {
+                        id_table: 3,
+                        name: "ANN",
+                        amount: 2,
+                        from_time: new Date(Date.UTC(2018, 7, 7, 10)),
+                        to_time: new Date(Date.UTC(2018, 7, 7, 12)),
+                        realized: true,
+                        id_reservation: 9999,
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(400);
+                    expect(response.body).toBe(":id is not equal id_reservation in body");
+
+                    done();
+                });
+            });
+
+        });
+        describe("/GET  /realized", function () {
+            it("should return realized reservations", function (done) {
+                request.get(baseUrl + "reservation/realized", {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(200);
+                    expect(response.body[0].id_reservation).toBeDefined();
+                    expect(response.body[0].name).toBeDefined();
+                    expect(response.body[0].amount).toBeDefined();
+                    expect(response.body[0].from_time).toBeDefined();
+                    expect(response.body[0].to_time).toBeDefined();
+                    expect(response.body[0].realized).toBe(true);
+                    expect(response.body[0].id_table).toBeDefined();
+
+                    done();
+                });
+            });
+
+        });
+        describe("/DELETE", function () {
+
+            it("should delete reservation", function (done) {
+                request.delete(baseUrl + "reservation/" + id_reservation, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(200);
+                    expect(response.body.result).toBe(true);
+
+                    done();
+                });
+            });
+        });
+    });
 });

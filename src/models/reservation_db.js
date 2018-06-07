@@ -26,7 +26,8 @@ class Reservation_db {
             },
             realized: {
                 type: Sequelize.BOOLEAN
-            }
+            },
+            id_table:{type: Sequelize.INTEGER } // TODO 2. usunac to pole i powinno wywalac blad przy dodaniu klucza obcego
         }, {
             timestamps: false, //create and update col
             freezeTableName: true,
@@ -52,7 +53,7 @@ class Reservation_db {
                     //     from_time: new Date(Date.UTC(2018, 7, 7, 7)),
                     //     to_time: new Date(Date.UTC(2018, 7, 7, 8)),
                     //     realized: false
-                    // },
+                    // }
                     // {
                     //     id_table: 1,
                     //     name: "JHON",
@@ -116,7 +117,7 @@ class Reservation_db {
 
     addReservation(req) {
         return new Promise((resolve, reject) => {
-            this.seq.query('SELECT * FROM "public"."Reservation" ' +
+            this.seq.query('SELECT * FROM "Reservation" ' +
                 'WHERE id_table=' + req.id_table + " " +
                 "AND (( from_time <=  '" + req.from_time + "' AND TO_TIME >= '" + req.from_time + "' ) " +
                 "OR ( FROM_TIME <= '" + req.to_time + "' AND TO_TIME >= '" + req.to_time + "' ) " +
@@ -145,12 +146,20 @@ class Reservation_db {
                         plain: true
                     })
                     .then(result => {
-                        let id_table = result[1].dataValues.id_table;
-                        this.table_db.takeTable(id_table).then(finalResult => resolve(finalResult)
+                        console.log(JSON.stringify(result));
+                        let id_table;
+                        if(process.env.TESTS) // TODO tutaj musialem dac flage
+                            id_table = result[1];
+                        else
+                            id_table= result[1].dataValues.id_table;
+                        this.table_db.takeTable(id_table).then(finalResult => {
+                            console.log(finalResult); // TODO 3. tutaj zwraca result false mimo iz w kosoli robi upate(tylko pdoczas testow ejst ten błąd)
+                            resolve(finalResult);
+                            }
                         );
-                    })
+                    });
             }
-        )
+        );
     }
 
     update(req) {
