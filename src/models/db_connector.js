@@ -52,4 +52,3 @@ let sequelize = createConnection();
 let dbConnector = getValidConnection(sequelize);
 module.exports = dbConnector;
 
-

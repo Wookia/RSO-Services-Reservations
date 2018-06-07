@@ -7,7 +7,6 @@ const fs = require('fs');
 let myService;
 let id_table = 1;
 let id_reservation = 1;
-//pytanie o token
 let token ="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6MywiaWQiOiJiNTBiZTQxOS02MWZlLTQ0MDMtOGYzNC0xZTE1NjMxMjYyYTQiLCJpYXQiOjE1MjgzNzIyMzIsImV4cCI6MTUyODQwODIzMn0.NKFjreodQZvimMIezmrlQkFGiPXuzflz8KgPkuUB-NkR3hgRZTSxChQdr38xSRKKgfB5WNImCZTbVcBStYkgfv6HMwQTJPlls62tugoI8Wr36ORaSU5Qwd94X5nsq_i3P__3tGs5kcY2IvE5O2U-HDvcBv_35effVOgxDxhL6k0";
 describe("Reservation Service - Integration Tests / ", function () {
 
@@ -28,8 +27,10 @@ describe("Reservation Service - Integration Tests / ", function () {
     }, 60000);
 
     afterAll(function (done) {
-        fs.unlink('spec/database.sqlite');
-        myService.stopServer().then(done);
+        myService.stopServer().then(() => {
+            fs.unlink('spec/database.sqlite');
+            done();
+        });
     }, 60000);
 
     describe("Table", function () {
@@ -43,8 +44,8 @@ describe("Reservation Service - Integration Tests / ", function () {
                         'Authorization': 'Bearer ' + token
                     },
                     json: true
-                }, function (err, response, body) {//pytanie o fora
-                    console.log('wazne' + response) ;
+                }, function (err, response, body) {
+                    console.log('info ' + JSON.stringify(response)) ;
                     expect(response.statusCode).toEqual(200);
                     expect(response.body[0].waiter).toBeDefined();
                     expect(response.body[0].seats).toBeDefined();
