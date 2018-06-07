@@ -49,7 +49,7 @@ describe("Reservation Service - Integration Tests / ", function () {
                     },
                     json: true
                 }, function (err, response, body) {
-                    console.log('infooooo ' + JSON.stringify(response)) ;
+                    console.log('infooooo ' + err) ;
                     expect(response.statusCode).toEqual(200);
                     expect(response.body[0].waiter).toBeDefined();
                     expect(response.body[0].seats).toBeDefined();
