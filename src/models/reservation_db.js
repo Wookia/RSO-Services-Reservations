@@ -44,38 +44,7 @@ class Reservation_db {
     createData() {
         this._Reservation.sync({force: false}).then(() => {
             return this._Reservation.bulkCreate([
-                {
-                    id_table: 1,
-                    name: "PETER",
-                    amount: 5,
-                    from_time: new Date(Date.UTC(2018, 7, 7, 7)),
-                    to_time: new Date(Date.UTC(2018, 7, 7, 8)),
-                    realized: false
-                },
-                {
-                    id_table: 1,
-                    name: "JHON",
-                    amount: 5,
-                    from_time: new Date(Date.UTC(2018, 7, 7, 7)),
-                    to_time: new Date(Date.UTC(2018, 7, 7, 8)),
-                    realized: false
-                },
-                {
-                    id_table: 3,
-                    name: "ANN",
-                    amount: 2,
-                    from_time: new Date(Date.UTC(2018, 7, 7, 10)),
-                    to_time: new Date(Date.UTC(2018, 7, 7, 12)),
-                    realized: true
-                },
-                {
-                    id_table: 6,
-                    name: "PASHA",
-                    amount: 4,
-                    from_time: new Date(Date.UTC(2018, 8, 15, 15)),
-                    to_time: new Date(Date.UTC(2018, 8, 15, 20)),
-                    realized: false
-                }
+
             ]);
         });
     }
