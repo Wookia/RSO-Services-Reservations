@@ -6,11 +6,27 @@ class Table_controller {
         this.addEndPoint()
     }
 
+    mapData (data){
+        return data.map((element) => {
+            return {
+                id_table: element.id_table,
+                seats: element.seats,
+                is_taken: element.is_taken
+            }
+        })
+    }
     addEndPoint() {
-        this.app.get('/api/table/', this.jwt, (req, res) => {
+        this.app.get('/api/table/', (req, res) => {
                 this.db.getAll().then(data => {
                     console.log('sent ' + data.length + ' rows from Table to ' + req.hostname);
-                    res.json(data);
+                    if(req.headers.authorization){
+                        this.jwt(req, res, (result) => {
+                            res.json(data);
+                        });
+                    }
+                    else{
+                        res.json(this.mapData(data));
+                    }
                 })
             }
         );

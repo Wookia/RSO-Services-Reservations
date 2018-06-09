@@ -44,7 +44,7 @@ function getDbHost() {
     const isWin = process.platform === "win32";
     if (isWin === true) {
         console.log('System: Windows');
-        host = '192.168.99.100';
+        host = 'localhost';
     } else {
         console.log('System: Linux/Mac');
         host = '192.168.99.100';
