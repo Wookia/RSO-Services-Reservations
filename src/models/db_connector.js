@@ -7,7 +7,7 @@ function createConnection() {
     const DB_USER = (process.env.DB_USER || 'postgres');
     const DB_PASSWORD = (process.env.DB_PASSWORD || 'password');
     const DB_HOST = (process.env.DB_HOST || getDbHost());
-    const DB_PORT = (process.env.DB_PORT || 5432);
+    const DB_PORT = (process.env.DB_PORT || 6543);
     let config = process.env.TESTS ? {
         dialect: 'sqlite',
         storage: 'spec/database.sqlite'
@@ -44,7 +44,7 @@ function getDbHost() {
     const isWin = process.platform === "win32";
     if (isWin === true) {
         console.log('System: Windows');
-        host = 'localhost';
+        host = '192.168.99.100';
     } else {
         console.log('System: Linux/Mac');
         host = '192.168.99.100';
