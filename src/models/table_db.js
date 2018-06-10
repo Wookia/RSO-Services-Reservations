@@ -21,7 +21,7 @@ class Table {
                 type: Sequelize.BOOLEAN
             }
         }, {
-            timestamps: false, //create and update col
+            timestamps: false,
             freezeTableName: true,
         });
 
@@ -36,18 +36,25 @@ class Table {
     }
 
     createData() {
-        return new Promise((resolve, reject) => {
-            this._Table.sync({force: true}).then(() => {
-                this._Table.bulkCreate([
-                    {waiter: 'John', seats: 6, is_taken: false},
-                    {waiter: 'Peter', seats: 3, is_taken: false},
-                    {waiter: 'Frank', seats: 2, is_taken: true},
-                    {waiter: 'Peter', seats: 8, is_taken: false},
-                    {waiter: 'Peter', seats: 2, is_taken: true},
-                    {waiter: 'Frank', seats: 4, is_taken: false},
-                    {waiter: 'John', seats: 5, is_taken: false}]).then(resolve())
-            });
-        })
+        return new Promise((resolve, reject) =>
+            this._Table.findAll().then(
+                data => {
+                    resolve();
+                })
+                .catch(() =>
+                    this._Table.sync({force: false})
+                        .then(() => {
+                            this._Table.bulkCreate([
+                                {waiter: 'John', seats: 6, is_taken: false},
+                                {waiter: 'Peter', seats: 3, is_taken: false},
+                                {waiter: 'Frank', seats: 2, is_taken: true},
+                                {waiter: 'Peter', seats: 8, is_taken: false},
+                                {waiter: 'Peter', seats: 2, is_taken: true},
+                                {waiter: 'Frank', seats: 4, is_taken: false},
+                                {waiter: 'John', seats: 5, is_taken: false}]).then(() => {
+                                resolve();
+                            });
+                        })));
     }
 
     getAll() {

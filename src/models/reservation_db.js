@@ -27,9 +27,9 @@ class Reservation_db {
             realized: {
                 type: Sequelize.BOOLEAN
             },
-            //id_table:{type: Sequelize.INTEGER } // TODO 2. usunac to pole i powinno wywalac blad przy dodaniu klucza obcego
+            id_table: {type: Sequelize.INTEGER}
         }, {
-            timestamps: false, //create and update col
+            timestamps: false,
             freezeTableName: true,
         });
     }
@@ -45,40 +45,7 @@ class Reservation_db {
     createData() {
         return new Promise((resolve, reject) => {
             this._Reservation.sync({force: true}).then(() => {
-                this._Reservation.bulkCreate([
-                    // {
-                    //     id_table: 1,
-                    //     name: "PETER",
-                    //     amount: 5,
-                    //     from_time: new Date(Date.UTC(2018, 7, 7, 7)),
-                    //     to_time: new Date(Date.UTC(2018, 7, 7, 8)),
-                    //     realized: false
-                    // }
-                    // {
-                    //     id_table: 1,
-                    //     name: "JHON",
-                    //     amount: 5,
-                    //     from_time: new Date(Date.UTC(2018, 7, 7, 7)),
-                    //     to_time: new Date(Date.UTC(2018, 7, 7, 8)),
-                    //     realized: false
-                    // },
-                    // {
-                    //     id_table: 3,
-                    //     name: "ANN",
-                    //     amount: 2,
-                    //     from_time: new Date(Date.UTC(2018, 7, 7, 10)),
-                    //     to_time: new Date(Date.UTC(2018, 7, 7, 12)),
-                    //     realized: true
-                    // },
-                    // {
-                    //     id_table: 6,
-                    //     name: "PASHA",
-                    //     amount: 4,
-                    //     from_time: new Date(Date.UTC(2018, 8, 15, 15)),
-                    //     to_time: new Date(Date.UTC(2018, 8, 15, 20)),
-                    //     realized: false
-                    // }
-                ]).then(resolve());
+                this._Reservation.bulkCreate([]).then(resolve());
             });
         });
     }
@@ -117,11 +84,14 @@ class Reservation_db {
 
     addReservation(req) {
         return new Promise((resolve, reject) => {
+            let from_date_tmp = new Date(new Date(req.from_time).setMinutes(new Date(req.from_time).getMinutes() + 1));
+            let to_date_tmp = new Date(new Date(req.to_time).setMinutes(new Date(req.to_time).getMinutes() - 1));
+
             this.seq.query('SELECT * FROM "Reservation" ' +
                 'WHERE id_table=' + req.id_table + " " +
-                "AND (( from_time <=  '" + req.from_time + "' AND TO_TIME >= '" + req.from_time + "' ) " +
-                "OR ( FROM_TIME <= '" + req.to_time + "' AND TO_TIME >= '" + req.to_time + "' ) " +
-                "OR ( FROM_TIME >= '" + req.from_time + "' AND TO_TIME <= '" + req.to_time + "'))",
+                "AND (( from_time <=  '" + from_date_tmp.toJSON() + "' AND TO_TIME >= '" + from_date_tmp.toJSON() + "' ) " +
+                "OR ( FROM_TIME <= '" + to_date_tmp.toJSON() + "' AND TO_TIME >= '" + to_date_tmp.toJSON() + "' ) " +
+                "OR ( FROM_TIME >= '" + from_date_tmp.toJSON() + "' AND TO_TIME <= '" + to_date_tmp.toJSON() + "'))",
                 {model: this.Reservation}).then((results) => {
                     if (results.toString().length === 0) {
                         this._Reservation.create(req).then(data => {
@@ -148,13 +118,12 @@ class Reservation_db {
                     .then(result => {
                         console.log(JSON.stringify(result));
                         let id_table;
-                        if(process.env.TESTS) // TODO tutaj musialem dac flage
+                        if (process.env.TESTS)
                             id_table = result[1];
                         else
-                            id_table= result[1].dataValues.id_table;
+                            id_table = result[1].dataValues.id_table;
                         this.table_db.takeTable(id_table).then(finalResult => {
-                            console.log(finalResult); // TODO 3. tutaj zwraca result false mimo iz w kosoli robi upate(tylko pdoczas testow ejst ten błąd)
-                            resolve(finalResult);
+                                resolve(finalResult);
                             }
                         );
                     });

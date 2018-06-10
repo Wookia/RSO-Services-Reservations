@@ -7,7 +7,7 @@ const fs = require('fs');
 let myService;
 let id_table = 1;
 let id_reservation = 1;
-let token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6MywiaWQiOiJiNTBiZTQxOS02MWZlLTQ0MDMtOGYzNC0xZTE1NjMxMjYyYTQiLCJpYXQiOjE1MjgzNzIyMzIsImV4cCI6MTUyODQwODIzMn0.NKFjreodQZvimMIezmrlQkFGiPXuzflz8KgPkuUB-NkR3hgRZTSxChQdr38xSRKKgfB5WNImCZTbVcBStYkgfv6HMwQTJPlls62tugoI8Wr36ORaSU5Qwd94X5nsq_i3P__3tGs5kcY2IvE5O2U-HDvcBv_35effVOgxDxhL6k0";
+let token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6MywiaWQiOiJhNzZiOTA3Yy0xMTIxLTQwNWEtYmI5Zi02Y2VlYTZjMWIwZjciLCJpYXQiOjE1Mjg2Mzc0OTgsImV4cCI6MTUyODY3MzQ5OH0.J7TUjVfMBGxXU-0QuFxPeqMR-lch18Pp_v_NAtf9sAyRL7XDkRJPI84xPEGMDJf5hn2NjBeVzsYHmpZZ47BSmc_ywDkd4qlxlU3xoE69QeIgbkChDNmBSYFo-h1wMSSVNnWjX8qWZkRtTKhfhVdRYGh6DGV5bEAEjBloYTIvsh0";
 describe("Reservation Service - Integration Tests / ", function () {
 
     process.env.TESTS = true;
@@ -55,6 +55,19 @@ describe("Reservation Service - Integration Tests / ", function () {
                     expect(response.body[0].seats).toBeDefined();
                     expect(response.body[0].is_taken).toBeDefined();
                     id_table = response.body[0].id_table;
+                    done();
+                });
+            });
+            it("should return public info about tables", function (done) {
+                request.get(baseUrl + "table/", {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    json: true
+                }, function (err, response, body) {
+                    expect(response.statusCode).toEqual(200);
+                    expect(response.body[0].seats).toBeDefined();
+                    expect(response.body[0].is_taken).toBeDefined();
                     done();
                 });
             });
@@ -146,7 +159,7 @@ describe("Reservation Service - Integration Tests / ", function () {
             });
 
             it("should update table", function (done) {
-                request.put(baseUrl + "table/" + id_table , {
+                request.put(baseUrl + "table/" + id_table, {
                     body: {
                         "id_table": id_table,
                         "waiter": "Peter",
@@ -355,7 +368,7 @@ describe("Reservation Service - Integration Tests / ", function () {
                     json: true
                 }, function (err, response, body) {
                     expect(response.statusCode).toEqual(200);
-                    expect(response.body.result).toBeDefined(); //TODO spytac
+                    expect(response.body.result).toBeDefined();
 
                     done();
                 });

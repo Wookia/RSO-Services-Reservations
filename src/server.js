@@ -28,7 +28,6 @@ exports.startServer = function () {
             let table_db = new Table_db(dbDriver);
             let reservation_db = new Reservation_db(dbDriver, table_db);
             return new Promise((resolv, rejec) => {
-                table_db.Table.hasMany(reservation_db.Reservation, {as: 'Reservation', foreignKey: {name: 'id_table'}}); //TODO 1. zakomentowałem dodanie klucza obcego
                 resolv();
             }).then(() => {
                 table_db.createData().then(() => {
